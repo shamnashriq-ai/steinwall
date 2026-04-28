@@ -1,26 +1,66 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@font-face {
+  font-family: "Outfit";
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("https://fonts.googleapis.com/css2?family=Outfit:wght@600&display=swap");
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+  --font-display: "Outfit", sans-serif;
+  --font-body: "Inter", sans-serif;
+  --font-mono: "IBM Plex Mono", monospace;
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --color-primary: #185FA5;
+  --color-primary-light: #E6F1FB;
+  --color-primary-dark: #0C447C;
+
+  --color-success: #0F6E56;
+  --color-success-light: #E1F5EE;
+
+  --color-warning: #854F0B;
+  --color-warning-light: #FAEEDA;
+
+  --color-error: #A32D2D;
+  --color-error-light: #FCEBEB;
+
+  --color-neutral: #5F5E5A;
+  --color-neutral-light: #F1EFE8;
+  --color-neutral-lighter: #D3D1C7;
+
+  --color-text-primary: #2C2C2A;
+  --color-text-secondary: #888780;
+
+  --color-surface: #FFFFFF;
+  --color-background: #F7F6F3;
+
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-background);
+  color: var(--color-text-primary);
+  font-family: var(--font-body);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-display);
+  font-weight: 600;
+}
+
+code, pre, .font-mono {
+  font-family: var(--font-mono);
+}
+
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[type="number"] {
+  -moz-appearance: textfield;
 }
