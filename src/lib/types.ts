@@ -144,6 +144,37 @@ export interface StrategicCanvas {
   kpis: KPIsCanvas | null;
 }
 
+// ========== Audit Standards Framework ==========
+
+export type BursaListingType = "main_market" | "ace_market" | "non_listed" | "glc";
+
+export type IndustryType =
+  | "energy_oil_gas"
+  | "manufacturing"
+  | "retail_consumer"
+  | "financial_services"
+  | "hospitality_tourism"
+  | "property_real_estate"
+  | "utilities_power"
+  | "agriculture_food"
+  | "healthcare_pharma"
+  | "other";
+
+export interface StandardsSelection {
+  bursaListing: BursaListingType;
+  industry: IndustryType;
+  mandatoryStandards: string[];
+  industryStandards: string[];
+  voluntaryStandards: string[];
+  primaryStandard: string;
+  emissionFactorSource: string;
+  baselineYear: string;
+  reportingYear: string;
+  boardApproval?: { date: string; approved: boolean };
+  status: "draft" | "complete" | "board_approved";
+  updatedAt: string;
+}
+
 // ========== Materiality Assessment ==========
 
 export interface MaterialityIssue {
@@ -272,6 +303,7 @@ export interface SteinwallData {
   companyName: string;
   industry: string;
   auditDueDate?: string;
+  standardsSelection: StandardsSelection | null;
   strategicCanvas: StrategicCanvas;
   materiality: MaterialityAssessment | null;
   scopeData: ScopeData;
@@ -306,6 +338,7 @@ export const defaultScopeData: ScopeData = {
 export const defaultSteinwallData: SteinwallData = {
   companyName: "",
   industry: "",
+  standardsSelection: null,
   strategicCanvas: defaultStrategicCanvas,
   materiality: null,
   scopeData: defaultScopeData,

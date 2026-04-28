@@ -5,7 +5,7 @@ import { Card, MetricCard } from "@/components/ui/card";
 import { ProgressSteps, type StepStatus } from "@/components/ui/progress-step";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { ArrowRight, Compass, AlertTriangle, Flag, Rocket, ShoppingCart, TrendingUp, Target, Database, Map, FileCheck } from "lucide-react";
+import { ArrowRight, Compass, AlertTriangle, Flag, Rocket, ShoppingCart, TrendingUp, Target, Database, Map, FileCheck, ClipboardCheck } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 
@@ -90,6 +90,14 @@ export default function DashboardPage() {
   const canvasPercent = Math.round((canvasComplete / 6) * 100);
   const canvasLocked = canvasComplete === 6;
 
+  const standardsStatus: StepStatus = data.standardsSelection?.status === "board_approved"
+    ? "approved"
+    : data.standardsSelection?.status === "complete"
+    ? "complete"
+    : data.standardsSelection
+    ? "in_progress"
+    : "not_started";
+
   const materialityStatus: StepStatus = data.materiality?.status === "board_approved"
     ? "approved"
     : data.materiality?.status === "complete"
@@ -115,7 +123,7 @@ export default function DashboardPage() {
 
   const totalEmissions = data.scopeData.totalS1 + data.scopeData.totalS2 + data.scopeData.totalS3;
 
-  const allSteps = [...canvasSteps, materialityStatus, dataStatus, strategyStatus];
+  const allSteps = [...canvasSteps, materialityStatus, standardsStatus, dataStatus, strategyStatus];
   const totalComplete = allSteps.filter((s) => s === "complete" || s === "approved").length;
   const overallPercent = Math.round((totalComplete / allSteps.length) * 100);
 
@@ -132,6 +140,8 @@ export default function DashboardPage() {
     !sc?.kpis ? { label: "Next: Set KPIs & OKRs", href: "/canvas/kpis", icon: TrendingUp } :
     kpiStatus !== "complete" ? { label: "Continue: KPIs & OKRs", href: "/canvas/kpis", icon: TrendingUp } :
     materialityStatus === "not_started" ? { label: "Next: Materiality Assessment", href: "/materiality", icon: Target } :
+    standardsStatus === "not_started" ? { label: "Next: Select Audit Standards", href: "/data-collection/standards", icon: ClipboardCheck } :
+    standardsStatus !== "complete" && standardsStatus !== "approved" ? { label: "Continue: Audit Standards", href: "/data-collection/standards", icon: ClipboardCheck } :
     dataStatus === "not_started" ? { label: "Next: Collect Emissions Data", href: "/data-collection", icon: Database } :
     strategyStatus === "not_started" ? { label: "Next: Build Tactical Strategy", href: "/strategy", icon: Map } :
     { label: "View Audit Trail", href: "/audit-trail", icon: FileCheck };
@@ -207,6 +217,7 @@ export default function DashboardPage() {
                 <ProgressSteps
                   steps={[
                     { label: "Materiality Assessment", status: materialityStatus, detail: materialityStatus === "approved" ? "Board approved" : undefined },
+                    { label: "Audit Standards Selection", status: standardsStatus, detail: standardsStatus === "approved" ? "Board approved" : undefined },
                     { label: "Scope 1, 2, 3 Data Collection", status: dataStatus, detail: dataStatus === "complete" ? `Quality: ${data.scopeData.dataQualityScore}%` : undefined },
                     { label: "Decarbonization Strategy", status: strategyStatus },
                     { label: "Audit-Ready Export", status: auditReady ? "complete" : "not_started" },
@@ -256,6 +267,11 @@ export default function DashboardPage() {
             <Link href="/materiality">
               <Button variant="secondary" className="w-full justify-start" size="sm">
                 <Target className="w-4 h-4" /> Materiality
+              </Button>
+            </Link>
+            <Link href="/data-collection/standards">
+              <Button variant="secondary" className="w-full justify-start" size="sm">
+                <ClipboardCheck className="w-4 h-4" /> Audit Standards
               </Button>
             </Link>
             <Link href="/data-collection">

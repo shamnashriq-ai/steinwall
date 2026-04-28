@@ -20,6 +20,7 @@ import {
   TrendingUp,
   ChevronDown,
   ChevronRight,
+  ClipboardCheck,
 } from "lucide-react";
 import { useState } from "react";
 
@@ -34,6 +35,7 @@ const canvasItems = [
 
 const executionItems = [
   { href: "/materiality", label: "Materiality Assessment", icon: Target },
+  { href: "/data-collection/standards", label: "Audit Standards", icon: ClipboardCheck },
   { href: "/data-collection", label: "Scope 1, 2, 3 Data", icon: Database },
   { href: "/strategy", label: "Strategy Builder", icon: Map },
   { href: "/audit-trail", label: "Audit Trail", icon: FileCheck },
@@ -50,7 +52,7 @@ export function Sidebar({ open, onClose }: SidebarProps) {
   const [executionOpen, setExecutionOpen] = useState(true);
 
   const isCanvasActive = pathname.startsWith("/canvas");
-  const isExecutionActive = executionItems.some((i) => pathname === i.href);
+  const isExecutionActive = executionItems.some((i) => pathname === i.href || pathname.startsWith(i.href + "/"));
 
   return (
     <>
@@ -133,7 +135,7 @@ export function Sidebar({ open, onClose }: SidebarProps) {
             {executionOpen && (
               <div className="flex flex-col gap-0.5 mt-1">
                 {executionItems.map((item) => {
-                  const active = pathname === item.href;
+                  const active = pathname === item.href || (item.href === "/data-collection/standards" && pathname === "/data-collection/standards");
                   return (
                     <Link
                       key={item.href}

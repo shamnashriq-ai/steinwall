@@ -14,8 +14,14 @@ import {
   units,
   sectorEmissionFactors,
 } from "@/lib/emission-factors";
+import {
+  getIndustryConfig,
+  getStandardById,
+  emphasisLabels,
+} from "@/lib/standards-data";
 import type { EmissionDataPoint, Supplier, ScopeData, ConfidenceLevel, DataSource } from "@/lib/types";
-import { Plus, Trash2, Upload, AlertCircle, CheckCircle } from "lucide-react";
+import Link from "next/link";
+import { Plus, Trash2, Upload, AlertCircle, CheckCircle, Settings2, ArrowRight } from "lucide-react";
 import {
   ResponsiveContainer,
   PieChart,
@@ -50,6 +56,8 @@ export default function DataCollectionPage() {
   const [supplierEmissions, setSupplierEmissions] = useState("");
 
   const scopeData = data.scopeData;
+  const standards = data.standardsSelection;
+  const industryConfig = standards?.industry ? getIndustryConfig(standards.industry) : null;
 
   const saveScopeData = useCallback(
     (partial: Partial<ScopeData>) => {
@@ -180,6 +188,57 @@ export default function DataCollectionPage() {
             <p className="text-[13px] uppercase tracking-wider text-text-secondary mb-1">Total</p>
             <p className="text-[22px] font-[family-name:var(--font-display)] text-success">{totalAll.toLocaleString()} <span className="text-[13px] text-text-secondary">tCO₂e</span></p>
           </Card>
+        </div>
+      )}
+
+      {/* Standards-aware guidance */}
+      {standards && industryConfig ? (
+        <div className="bg-primary-light/40 border border-primary/20 rounded-[var(--radius-md)] p-4 mb-6">
+          <div className="flex items-center justify-between mb-2">
+            <div className="flex items-center gap-2">
+              <Settings2 className="w-4 h-4 text-primary" />
+              <p className="text-[14px] font-medium text-primary">
+                {industryConfig.label} — {standards.mandatoryStandards.concat(standards.industryStandards).map((id) => getStandardById(id)?.shortName).filter(Boolean).join(" + ")}
+              </p>
+            </div>
+            <Link href="/data-collection/standards">
+              <Badge variant="info">Edit Standards</Badge>
+            </Link>
+          </div>
+          <div className="flex flex-wrap gap-3 text-[13px] text-text-secondary">
+            <span>Scope 1: <Badge variant={emphasisLabels[industryConfig.scope1Emphasis].color as "error" | "warning" | "info" | "neutral"}>{emphasisLabels[industryConfig.scope1Emphasis].label}</Badge></span>
+            <span>Scope 2: <Badge variant={emphasisLabels[industryConfig.scope2Emphasis].color as "error" | "warning" | "info" | "neutral"}>{emphasisLabels[industryConfig.scope2Emphasis].label}</Badge></span>
+            <span>Scope 3: <Badge variant={emphasisLabels[industryConfig.scope3Emphasis].color as "error" | "warning" | "info" | "neutral"}>{emphasisLabels[industryConfig.scope3Emphasis].label}</Badge></span>
+          </div>
+          {tab === "scope3" && industryConfig.materialScope3Categories.length > 0 && (
+            <div className="mt-2 pt-2 border-t border-primary/10">
+              <p className="text-[12px] text-text-secondary mb-1">Material Scope 3 categories for your industry:</p>
+              <div className="flex flex-wrap gap-1.5">
+                {industryConfig.materialScope3Categories.map((cat) => (
+                  <Badge key={cat} variant="warning">
+                    {cat.replace("cat", "Cat ").replace(/_/g, " ")}
+                  </Badge>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      ) : (
+        <div className="bg-warning-light border border-warning/20 rounded-[var(--radius-md)] p-4 mb-6">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <AlertCircle className="w-4 h-4 text-warning" />
+              <p className="text-[14px] text-warning font-medium">No audit standards selected yet</p>
+            </div>
+            <Link href="/data-collection/standards">
+              <Button variant="secondary" size="sm">
+                Select Standards <ArrowRight className="w-4 h-4" />
+              </Button>
+            </Link>
+          </div>
+          <p className="text-[13px] text-text-secondary mt-1">
+            Select your audit standards first to get industry-specific guidance and adaptive data collection.
+          </p>
         </div>
       )}
 
