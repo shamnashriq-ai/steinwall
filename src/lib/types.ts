@@ -1,3 +1,149 @@
+// ========== Strategic Planning Canvas (6 Layers) ==========
+
+export interface PurposeCanvas {
+  visionStatement: string;
+  drivers: { id: string; label: string; selected: boolean; rank: number }[];
+  financialImpact: { type: "opportunity" | "risk" | "both"; revenue: string; costs: string; capitalAccess: string };
+  strategicAnchors: string[];
+  boardApproval?: { date: string; attendees: string; approved: boolean };
+  status: "draft" | "complete" | "board_approved";
+  updatedAt: string;
+}
+
+export const defaultPurposeDrivers = [
+  { id: "d1", label: "Investor/Stakeholder Pressure", selected: false, rank: 0 },
+  { id: "d2", label: "Customer Demand", selected: false, rank: 0 },
+  { id: "d3", label: "Supply Chain Risk", selected: false, rank: 0 },
+  { id: "d4", label: "Regulatory Requirement", selected: false, rank: 0 },
+  { id: "d5", label: "Competitive Positioning", selected: false, rank: 0 },
+  { id: "d6", label: "Workforce Attraction", selected: false, rank: 0 },
+  { id: "d7", label: "Cost Reduction", selected: false, rank: 0 },
+  { id: "d8", label: "Brand/Values", selected: false, rank: 0 },
+];
+
+export interface ChallengeItem {
+  id: string;
+  category: "operational" | "market" | "organizational" | "external";
+  description: string;
+  barriers: string[];
+  severity: "high" | "medium" | "low";
+}
+
+export interface ChallengesCanvas {
+  challenges: ChallengeItem[];
+  capexRange: string;
+  externalFinancing: string;
+  leadershipDriver: string;
+  status: "draft" | "complete";
+  updatedAt: string;
+}
+
+export interface MissionCanvas {
+  missionStatement: string;
+  scope1: { included: boolean; target2030: string; target2050: string; baseline: string; baselineYear: string };
+  scope2: { included: boolean; target2030: string; target2050: string; baseline: string; baselineYear: string; methodology: "location" | "market" };
+  scope3: { included: boolean; target2030: string; target2050: string; baseline: string; baselineYear: string; categories: string[] };
+  sbtAlignment: string;
+  targetMethodology: string;
+  interimMilestone: string;
+  supplierCommitments: string[];
+  boardApproval?: { date: string; attendees: string; approved: boolean; publicCommitment: boolean };
+  status: "draft" | "complete" | "board_approved";
+  updatedAt: string;
+}
+
+export const scope3Categories = [
+  "1. Purchased goods & services",
+  "2. Capital goods",
+  "3. Fuel/energy-related activities",
+  "4. Upstream transport",
+  "5. Waste from operations",
+  "6. Business travel",
+  "7. Employee commuting",
+  "8. Upstream leased assets",
+  "9. Downstream transport",
+  "10. Processing of sold products",
+  "11. Use of sold products",
+  "12. End-of-life treatment",
+  "13. Downstream leased assets",
+  "14. Franchises",
+  "15. Investments",
+];
+
+export interface ActionInitiative {
+  id: string;
+  scope: "scope1" | "scope2" | "scope3" | "cross";
+  name: string;
+  goal: string;
+  rationale: string;
+  phases: { name: string; timeline: string; description: string }[];
+  capex: string;
+  owner: string;
+  risks: string[];
+  successMetrics: string[];
+  priority: "high_quick" | "high_long" | "medium_quick" | "medium_long";
+}
+
+export interface ActionPlansCanvas {
+  initiatives: ActionInitiative[];
+  status: "draft" | "complete";
+  updatedAt: string;
+}
+
+export interface ProcurementCategory {
+  id: string;
+  name: string;
+  currentState: string;
+  greenAlternative: string;
+  procurementStrategy: string;
+  costImpact: string;
+  emissionsImpact: string;
+}
+
+export interface ProcurementCanvas {
+  categories: ProcurementCategory[];
+  greenPolicy: string;
+  supplierCriteria: string[];
+  annualBudget: string;
+  status: "draft" | "complete";
+  updatedAt: string;
+}
+
+export interface KPI {
+  id: string;
+  level: "board" | "department" | "operational";
+  name: string;
+  metric: string;
+  current: string;
+  target2026: string;
+  target2030: string;
+  owner: string;
+  frequency: "daily" | "weekly" | "monthly" | "quarterly" | "annual";
+}
+
+export interface OKR {
+  id: string;
+  department: string;
+  objective: string;
+  keyResults: { id: string; description: string; timeline: string; status: "on_track" | "at_risk" | "off_track" | "not_started" }[];
+}
+
+export interface KPIsCanvas {
+  kpis: KPI[];
+  okrs: OKR[];
+  status: "draft" | "complete";
+  updatedAt: string;
+}
+
+export interface StrategicCanvas {
+  purpose: PurposeCanvas | null;
+  challenges: ChallengesCanvas | null;
+  mission: MissionCanvas | null;
+  actionPlans: ActionPlansCanvas | null;
+  procurement: ProcurementCanvas | null;
+  kpis: KPIsCanvas | null;
+}
+
 // ========== Materiality Assessment ==========
 
 export interface MaterialityIssue {
@@ -126,6 +272,7 @@ export interface SteinwallData {
   companyName: string;
   industry: string;
   auditDueDate?: string;
+  strategicCanvas: StrategicCanvas;
   materiality: MaterialityAssessment | null;
   scopeData: ScopeData;
   strategy: Strategy | null;
@@ -134,6 +281,15 @@ export interface SteinwallData {
   users: { name: string; email: string; role: "admin" | "contributor" | "viewer" }[];
   lastUpdated: string;
 }
+
+export const defaultStrategicCanvas: StrategicCanvas = {
+  purpose: null,
+  challenges: null,
+  mission: null,
+  actionPlans: null,
+  procurement: null,
+  kpis: null,
+};
 
 export const defaultScopeData: ScopeData = {
   scope1: [],
@@ -150,6 +306,7 @@ export const defaultScopeData: ScopeData = {
 export const defaultSteinwallData: SteinwallData = {
   companyName: "",
   industry: "",
+  strategicCanvas: defaultStrategicCanvas,
   materiality: null,
   scopeData: defaultScopeData,
   strategy: null,
