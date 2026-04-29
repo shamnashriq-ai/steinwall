@@ -180,8 +180,12 @@ export interface StandardsSelection {
 export interface MaterialityIssue {
   id: string;
   name: string;
-  businessImpact: number; // 1-10 Likert
-  stakeholderConcern: number; // 1-10 Likert
+  category?: string;
+  businessImpact: number;
+  stakeholderConcern: number;
+  stakeholderChecks?: Record<string, boolean>;
+  combinedScore?: number;
+  verdict?: string;
   isMaterial: boolean;
 }
 
@@ -189,6 +193,8 @@ export interface MaterialityAssessment {
   id: string;
   industry: string;
   companyName: string;
+  ebitda?: number;
+  currency?: string;
   issues: MaterialityIssue[];
   scopePriorities: { scope1: number; scope2: number; scope3: number };
   boardMemo?: {
@@ -196,6 +202,7 @@ export interface MaterialityAssessment {
     attendees: string;
     approved: boolean;
     approvedDate?: string;
+    memoText?: string;
   };
   status: "draft" | "complete" | "board_approved";
   createdAt: string;
@@ -297,6 +304,214 @@ export interface MethodologyCheck {
   note?: string;
 }
 
+// ========== Governance Framework ==========
+
+export interface GovernanceCommittee {
+  id: string;
+  name: string;
+  chair: string;
+  members: string[];
+  frequency: "monthly" | "quarterly" | "biannual" | "annual";
+  decisionRights: string[];
+  charter: string;
+}
+
+export interface GovernanceAccountability {
+  id: string;
+  role: string;
+  name: string;
+  responsibilities: string[];
+  kpiLinked: boolean;
+  compensationLinked: boolean;
+  reportingTo: string;
+}
+
+export interface GovernanceFramework {
+  boardOversight: GovernanceCommittee[];
+  executiveAccountability: GovernanceAccountability[];
+  reportingCadence: string;
+  integrationWithFinancialPlanning: string;
+  boardApproval?: { date: string; approved: boolean; attendees: string };
+  status: "draft" | "complete" | "board_approved";
+  updatedAt: string;
+}
+
+// ========== Climate Scenario Analysis ==========
+
+export interface ClimateScenario {
+  id: string;
+  name: string;
+  type: "bau" | "1.5c" | "2c" | "stress";
+  description: string;
+  assumptions: { factor: string; value: string }[];
+  revenueImpact: string;
+  ebitdaImpact: string;
+  capexRequired: string;
+  strandedAssetRisk: string;
+  timeline: string;
+  strategyResponse: string;
+  confidence: number;
+}
+
+export interface ScenarioAnalysis {
+  scenarios: ClimateScenario[];
+  carbonPriceSensitivity: { price: number; impact: string }[];
+  selectedPathway: string;
+  boardApproval?: { date: string; approved: boolean; attendees: string };
+  status: "draft" | "complete" | "board_approved";
+  updatedAt: string;
+}
+
+// ========== Financial Impact Quantification ==========
+
+export interface FinancialImpactYear {
+  year: number;
+  capex: number;
+  opexChange: number;
+  revenueAtRisk: number;
+  strandedAssets: number;
+  dividendImpact: number;
+  debtCapacity: number;
+}
+
+export interface FinancialImpactModel {
+  currentEbitda: number;
+  currency: string;
+  projections: FinancialImpactYear[];
+  transitionCostTotal: number;
+  roiOnGreenCapex: string;
+  creditRatingImpact: string;
+  fundingSources: { source: string; amount: number; percentage: number }[];
+  sensitivityFactors: { factor: string; lowCase: string; baseCase: string; highCase: string }[];
+  boardApproval?: { date: string; approved: boolean; attendees: string };
+  status: "draft" | "complete" | "board_approved";
+  updatedAt: string;
+}
+
+// ========== Physical Risk Assessment ==========
+
+export interface Facility {
+  id: string;
+  name: string;
+  location: string;
+  coordinates?: { lat: number; lng: number };
+  assetValue: number;
+  hazards: { type: string; severity: "high" | "medium" | "low"; likelihood: string; financialExposure: number }[];
+  mitigationCapex: number;
+  mitigationPlan: string;
+  businessContinuityPlan: string;
+}
+
+export interface PhysicalRiskAssessment {
+  facilities: Facility[];
+  scenarioUsed: string;
+  totalExposure: number;
+  totalMitigationCapex: number;
+  boardApproval?: { date: string; approved: boolean; attendees: string };
+  status: "draft" | "complete" | "board_approved";
+  updatedAt: string;
+}
+
+// ========== Stakeholder Engagement ==========
+
+export interface StakeholderEngagement {
+  id: string;
+  stakeholderGroup: "investors" | "customers" | "suppliers" | "employees" | "communities" | "regulators" | "ngos" | "other";
+  engagementMethod: "survey" | "workshop" | "interview" | "roundtable" | "meeting" | "other";
+  date: string;
+  participants: string;
+  topConcerns: string[];
+  response: string;
+  evidenceRef: string;
+  influencedMateriality: boolean;
+}
+
+export interface StakeholderEngagementRecord {
+  engagements: StakeholderEngagement[];
+  totalEngaged: number;
+  materialTopicsInfluenced: string[];
+  status: "draft" | "complete";
+  updatedAt: string;
+}
+
+// ========== Segment-Level Strategy ==========
+
+export interface BusinessSegment {
+  id: string;
+  name: string;
+  revenueContribution: number;
+  emissionsScope1: number;
+  emissionsScope2: number;
+  emissionsScope3: number;
+  percentOfGroupEmissions: number;
+  climateRisks: string[];
+  climateOpportunities: string[];
+  strategy: string;
+  targetReduction2030: string;
+  targetReduction2050: string;
+  capexAllocated: number;
+  milestones: { year: number; description: string }[];
+}
+
+export interface SegmentStrategy {
+  segments: BusinessSegment[];
+  totalGroupEmissions: number;
+  boardApproval?: { date: string; approved: boolean; attendees: string };
+  status: "draft" | "complete" | "board_approved";
+  updatedAt: string;
+}
+
+// ========== Multi-Year Comparatives ==========
+
+export interface YearlyMetric {
+  year: number;
+  scope1: number;
+  scope2: number;
+  scope3: number;
+  total: number;
+  energyConsumption: number;
+  waterWithdrawal: number;
+  wasteGenerated: number;
+  methodology: string;
+  notes: string;
+}
+
+export interface ComparativeData {
+  metrics: YearlyMetric[];
+  baselineYear: number;
+  trends: { metric: string; direction: "improving" | "stable" | "declining"; annualChange: string }[];
+  anomalies: { year: number; metric: string; description: string }[];
+  status: "draft" | "complete";
+  updatedAt: string;
+}
+
+// ========== Audit Export ==========
+
+export interface AuditWorkpaper {
+  id: string;
+  metricName: string;
+  currentValue: string;
+  priorYear1: string;
+  priorYear2: string;
+  calculationMethod: string;
+  dataSource: string;
+  assumptions: string;
+  preparer: string;
+  preparerDate: string;
+  reviewer: string;
+  reviewerDate: string;
+}
+
+export interface AuditExportConfig {
+  workpapers: AuditWorkpaper[];
+  methodologyDoc: { standard: string; scope: string; emissionFactors: string; boundary: string; limitations: string };
+  sourceDocIndex: { document: string; location: string; maintainer: string }[];
+  auditorSummary: { materialMetrics: string[]; riskAreas: string[]; limitations: string[]; priorFindings: string[] };
+  exportFormat: "pdf" | "excel" | "xbrl";
+  status: "draft" | "complete";
+  updatedAt: string;
+}
+
 // ========== App State ==========
 
 export interface SteinwallData {
@@ -308,6 +523,14 @@ export interface SteinwallData {
   materiality: MaterialityAssessment | null;
   scopeData: ScopeData;
   strategy: Strategy | null;
+  governance: GovernanceFramework | null;
+  scenarioAnalysis: ScenarioAnalysis | null;
+  financialImpact: FinancialImpactModel | null;
+  physicalRisk: PhysicalRiskAssessment | null;
+  stakeholderEngagement: StakeholderEngagementRecord | null;
+  segmentStrategy: SegmentStrategy | null;
+  comparativeData: ComparativeData | null;
+  auditExport: AuditExportConfig | null;
   auditDecisions: AuditDecision[];
   methodologyChecks: MethodologyCheck[];
   users: { name: string; email: string; role: "admin" | "contributor" | "viewer" }[];
@@ -343,6 +566,14 @@ export const defaultSteinwallData: SteinwallData = {
   materiality: null,
   scopeData: defaultScopeData,
   strategy: null,
+  governance: null,
+  scenarioAnalysis: null,
+  financialImpact: null,
+  physicalRisk: null,
+  stakeholderEngagement: null,
+  segmentStrategy: null,
+  comparativeData: null,
+  auditExport: null,
   auditDecisions: [],
   methodologyChecks: [
     { id: "mc1", label: "Scope 1 methodology documented", checked: false },

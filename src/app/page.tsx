@@ -5,7 +5,7 @@ import { Card, MetricCard } from "@/components/ui/card";
 import { ProgressSteps, type StepStatus } from "@/components/ui/progress-step";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { ArrowRight, Compass, AlertTriangle, Flag, Rocket, ShoppingCart, TrendingUp, Target, Database, Map, FileCheck, ClipboardCheck } from "lucide-react";
+import { ArrowRight, Compass, AlertTriangle, Flag, Rocket, ShoppingCart, TrendingUp, Target, Database, Map, FileCheck, ClipboardCheck, Shield, Zap, DollarSign, MapPin, Users2, Layers, GitCompare, Download } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 
@@ -119,11 +119,23 @@ export default function DashboardPage() {
     ? "in_progress"
     : "not_started";
 
+  const governanceStatus: StepStatus = data.governance?.status === "board_approved" ? "approved" : data.governance?.status === "complete" ? "complete" : data.governance ? "in_progress" : "not_started";
+  const scenarioStatus: StepStatus = data.scenarioAnalysis?.status === "board_approved" ? "approved" : data.scenarioAnalysis?.status === "complete" ? "complete" : data.scenarioAnalysis ? "in_progress" : "not_started";
+  const financialStatus: StepStatus = data.financialImpact?.status === "board_approved" ? "approved" : data.financialImpact?.status === "complete" ? "complete" : data.financialImpact ? "in_progress" : "not_started";
+  const physicalRiskStatus: StepStatus = data.physicalRisk?.status === "board_approved" ? "approved" : data.physicalRisk?.status === "complete" ? "complete" : data.physicalRisk ? "in_progress" : "not_started";
+  const stakeholderStatus: StepStatus = data.stakeholderEngagement?.status === "complete" ? "complete" : data.stakeholderEngagement ? "in_progress" : "not_started";
+  const segmentStatus: StepStatus = data.segmentStrategy?.status === "board_approved" ? "approved" : data.segmentStrategy?.status === "complete" ? "complete" : data.segmentStrategy ? "in_progress" : "not_started";
+  const comparativeStatus: StepStatus = data.comparativeData?.status === "complete" ? "complete" : data.comparativeData ? "in_progress" : "not_started";
+  const auditExportStatus: StepStatus = data.auditExport?.status === "complete" ? "complete" : data.auditExport ? "in_progress" : "not_started";
+
+  const complianceSteps = [governanceStatus, scenarioStatus, financialStatus, physicalRiskStatus, stakeholderStatus, segmentStatus, comparativeStatus, auditExportStatus];
+  const complianceComplete = complianceSteps.filter((s) => s === "complete" || s === "approved").length;
+
   const auditReady = materialityStatus === "approved" && dataStatus === "complete" && strategyStatus === "approved";
 
   const totalEmissions = data.scopeData.totalS1 + data.scopeData.totalS2 + data.scopeData.totalS3;
 
-  const allSteps = [...canvasSteps, materialityStatus, standardsStatus, dataStatus, strategyStatus];
+  const allSteps = [...canvasSteps, materialityStatus, standardsStatus, dataStatus, strategyStatus, ...complianceSteps];
   const totalComplete = allSteps.filter((s) => s === "complete" || s === "approved").length;
   const overallPercent = Math.round((totalComplete / allSteps.length) * 100);
 
@@ -171,9 +183,9 @@ export default function DashboardPage() {
           status="neutral"
         />
         <MetricCard
-          label="Audit Ready"
-          value={auditReady ? "Yes" : "Not Yet"}
-          status={auditReady ? "success" : "warning"}
+          label="NFRS Compliance"
+          value={`${complianceComplete}/8`}
+          status={complianceComplete >= 6 ? "success" : complianceComplete >= 3 ? "warning" : "neutral"}
         />
       </div>
 
@@ -220,7 +232,21 @@ export default function DashboardPage() {
                     { label: "Audit Standards Selection", status: standardsStatus, detail: standardsStatus === "approved" ? "Board approved" : undefined },
                     { label: "Scope 1, 2, 3 Data Collection", status: dataStatus, detail: dataStatus === "complete" ? `Quality: ${data.scopeData.dataQualityScore}%` : undefined },
                     { label: "Decarbonization Strategy", status: strategyStatus },
-                    { label: "Audit-Ready Export", status: auditReady ? "complete" : "not_started" },
+                  ]}
+                />
+              </div>
+              <div className="border-t border-neutral-lighter mt-4 pt-4">
+                <p className="text-[13px] text-text-secondary mb-3">NFRS Compliance ({complianceComplete}/8)</p>
+                <ProgressSteps
+                  steps={[
+                    { label: "Governance Framework", status: governanceStatus },
+                    { label: "Scenario Analysis", status: scenarioStatus },
+                    { label: "Financial Impact", status: financialStatus },
+                    { label: "Physical Risk", status: physicalRiskStatus },
+                    { label: "Stakeholder Engagement", status: stakeholderStatus },
+                    { label: "Segment Strategy", status: segmentStatus },
+                    { label: "Multi-Year Data", status: comparativeStatus },
+                    { label: "Audit Export", status: auditExportStatus },
                   ]}
                 />
               </div>
@@ -287,6 +313,48 @@ export default function DashboardPage() {
             <Link href="/audit-trail">
               <Button variant="secondary" className="w-full justify-start" size="sm">
                 <FileCheck className="w-4 h-4" /> Audit Trail
+              </Button>
+            </Link>
+
+            <p className="text-[11px] uppercase tracking-widest font-semibold text-text-secondary mt-3 mb-1">NFRS Compliance</p>
+            <Link href="/governance">
+              <Button variant="secondary" className="w-full justify-start" size="sm">
+                <Shield className="w-4 h-4" /> Governance
+              </Button>
+            </Link>
+            <Link href="/scenario-analysis">
+              <Button variant="secondary" className="w-full justify-start" size="sm">
+                <Zap className="w-4 h-4" /> Scenarios
+              </Button>
+            </Link>
+            <Link href="/financial-impact">
+              <Button variant="secondary" className="w-full justify-start" size="sm">
+                <DollarSign className="w-4 h-4" /> Financial Impact
+              </Button>
+            </Link>
+            <Link href="/physical-risk">
+              <Button variant="secondary" className="w-full justify-start" size="sm">
+                <MapPin className="w-4 h-4" /> Physical Risk
+              </Button>
+            </Link>
+            <Link href="/stakeholder-engagement">
+              <Button variant="secondary" className="w-full justify-start" size="sm">
+                <Users2 className="w-4 h-4" /> Stakeholders
+              </Button>
+            </Link>
+            <Link href="/segment-strategy">
+              <Button variant="secondary" className="w-full justify-start" size="sm">
+                <Layers className="w-4 h-4" /> Segments
+              </Button>
+            </Link>
+            <Link href="/comparatives">
+              <Button variant="secondary" className="w-full justify-start" size="sm">
+                <GitCompare className="w-4 h-4" /> Comparatives
+              </Button>
+            </Link>
+            <Link href="/audit-export">
+              <Button variant="secondary" className="w-full justify-start" size="sm">
+                <Download className="w-4 h-4" /> Audit Export
               </Button>
             </Link>
           </div>

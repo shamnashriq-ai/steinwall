@@ -21,6 +21,14 @@ import {
   ChevronDown,
   ChevronRight,
   ClipboardCheck,
+  Shield,
+  Zap,
+  DollarSign,
+  MapPin,
+  Users2,
+  Layers,
+  GitCompare,
+  Download,
 } from "lucide-react";
 import { useState } from "react";
 
@@ -41,6 +49,17 @@ const executionItems = [
   { href: "/audit-trail", label: "Audit Trail", icon: FileCheck },
 ];
 
+const complianceItems = [
+  { href: "/governance", label: "Governance Framework", icon: Shield },
+  { href: "/scenario-analysis", label: "Scenario Analysis", icon: Zap },
+  { href: "/financial-impact", label: "Financial Impact", icon: DollarSign },
+  { href: "/physical-risk", label: "Physical Risk", icon: MapPin },
+  { href: "/stakeholder-engagement", label: "Stakeholder Engagement", icon: Users2 },
+  { href: "/segment-strategy", label: "Segment Strategy", icon: Layers },
+  { href: "/comparatives", label: "Multi-Year Data", icon: GitCompare },
+  { href: "/audit-export", label: "Audit Export", icon: Download },
+];
+
 interface SidebarProps {
   open: boolean;
   onClose: () => void;
@@ -50,9 +69,11 @@ export function Sidebar({ open, onClose }: SidebarProps) {
   const pathname = usePathname();
   const [canvasOpen, setCanvasOpen] = useState(true);
   const [executionOpen, setExecutionOpen] = useState(true);
+  const [complianceOpen, setComplianceOpen] = useState(true);
 
   const isCanvasActive = pathname.startsWith("/canvas");
   const isExecutionActive = executionItems.some((i) => pathname === i.href || pathname.startsWith(i.href + "/"));
+  const isComplianceActive = complianceItems.some((i) => pathname === i.href);
 
   return (
     <>
@@ -136,6 +157,37 @@ export function Sidebar({ open, onClose }: SidebarProps) {
               <div className="flex flex-col gap-0.5 mt-1">
                 {executionItems.map((item) => {
                   const active = pathname === item.href || (item.href === "/data-collection/standards" && pathname === "/data-collection/standards");
+                  return (
+                    <Link
+                      key={item.href}
+                      href={item.href}
+                      onClick={onClose}
+                      className={`flex items-center gap-3 px-3 py-2 rounded-[var(--radius-sm)] text-[13px] font-medium transition-colors ${
+                        active
+                          ? "bg-primary-light text-primary"
+                          : "text-text-secondary hover:bg-neutral-light hover:text-text-primary"
+                      }`}
+                    >
+                      <item.icon className="w-[16px] h-[16px]" />
+                      {item.label}
+                    </Link>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+          <div className="mt-3">
+            <button
+              onClick={() => setComplianceOpen(!complianceOpen)}
+              className="flex items-center justify-between w-full px-3 py-2 text-[11px] uppercase tracking-widest font-semibold text-text-secondary hover:text-text-primary cursor-pointer"
+            >
+              <span>NFRS Compliance</span>
+              {complianceOpen ? <ChevronDown className="w-3.5 h-3.5" /> : <ChevronRight className="w-3.5 h-3.5" />}
+            </button>
+            {complianceOpen && (
+              <div className="flex flex-col gap-0.5 mt-1">
+                {complianceItems.map((item) => {
+                  const active = pathname === item.href;
                   return (
                     <Link
                       key={item.href}
