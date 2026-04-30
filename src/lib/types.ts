@@ -306,6 +306,8 @@ export interface MethodologyCheck {
 
 // ========== Governance Framework ==========
 
+export type GovernanceModelType = "dedicated_committee" | "audit_committee" | "risk_committee" | "direct_board" | "no_formal";
+
 export interface GovernanceCommittee {
   id: string;
   name: string;
@@ -314,36 +316,130 @@ export interface GovernanceCommittee {
   frequency: "monthly" | "quarterly" | "biannual" | "annual";
   decisionRights: string[];
   charter: string;
+  includeIndependentDirectors: boolean;
+  includeAuditChair: boolean;
+  includeRiskChair: boolean;
+  authorityLevel: "advisory" | "limited" | "full";
+  esgAgendaMinutes: number;
+  charterApproved: boolean;
+  charterApprovedDate: string;
+  minutesDocumented: boolean;
+  minutesStorage: string;
+}
+
+export interface CompensationLinkage {
+  baseSalary: string;
+  bonusPotentialPercent: number;
+  financialPercent: number;
+  strategicPercent: number;
+  climatePercent: number;
+  climateMetrics: { metric: string; weight: number; target: string }[];
 }
 
 export interface GovernanceAccountability {
   id: string;
   role: string;
   name: string;
+  yearsInRole: string;
   responsibilities: string[];
+  successMetrics: string[];
+  consequences: string;
   kpiLinked: boolean;
   compensationLinked: boolean;
+  compensation: CompensationLinkage | null;
   reportingTo: string;
+  boardApprovalDate: string;
+  mandate: string;
+}
+
+export interface DecisionAuthority {
+  committeeCanApprove: string[];
+  boardMustApprove: string[];
+  capexThreshold: string;
 }
 
 export interface GovernanceFramework {
+  governanceModel: GovernanceModelType;
   boardOversight: GovernanceCommittee[];
   executiveAccountability: GovernanceAccountability[];
+  decisionAuthority: DecisionAuthority;
   reportingCadence: string;
   integrationWithFinancialPlanning: string;
-  boardApproval?: { date: string; approved: boolean; attendees: string };
+  investorDisclosure: string[];
+  communicationMethod: string;
+  governanceMaturityScore: number;
+  accountabilityMaturityScore: number;
+  boardApproval?: { date: string; approved: boolean; attendees: string; resolutionRef: string };
   status: "draft" | "complete" | "board_approved";
   updatedAt: string;
 }
 
 // ========== Climate Scenario Analysis ==========
 
+export interface CarbonPriceTrajectory {
+  year2025: string;
+  year2030: string;
+  year2040: string;
+  year2050: string;
+  basis: string;
+}
+
+export interface DemandForecast {
+  product: string;
+  current: string;
+  forecast2030: string;
+  forecast2040: string;
+  forecast2050: string;
+  assumption: string;
+}
+
+export interface TechnologyCostForecast {
+  technology: string;
+  currentCost: string;
+  cost2030: string;
+  cost2040: string;
+  assumption: string;
+}
+
+export interface RegulatoryForecast {
+  regulation: string;
+  currentStatus: string;
+  evolution: string;
+  impact: string;
+}
+
+export interface ScenarioFinancials {
+  revenueByProduct: { product: string; current: string; projected: string; changePercent: string }[];
+  totalRevenue: string;
+  energyCosts: string;
+  carbonCosts: string;
+  carbonCalcEmissions: string;
+  carbonCalcPrice: string;
+  otherCosts: string;
+  totalCosts: string;
+  ebitda: string;
+  ebitdaMargin: string;
+  strandedAssetWritedown: string;
+  annualCapex: string;
+  dividendCapacity: string;
+  creditRating: string;
+}
+
 export interface ClimateScenario {
   id: string;
   name: string;
   type: "bau" | "1.5c" | "2c" | "stress";
   description: string;
+  probability: "most_likely" | "possible" | "unlikely";
+  stressType?: "technology" | "geopolitical" | "demand" | "financial" | "regulatory" | "custom";
   assumptions: { factor: string; value: string }[];
+  carbonPrice: CarbonPriceTrajectory;
+  demandForecasts: DemandForecast[];
+  techForecasts: TechnologyCostForecast[];
+  regulatoryForecasts: RegulatoryForecast[];
+  strategyDescription: string;
+  keyDecisions: string[];
+  financials: ScenarioFinancials;
   revenueImpact: string;
   ebitdaImpact: string;
   capexRequired: string;
@@ -353,10 +449,20 @@ export interface ClimateScenario {
   confidence: number;
 }
 
+export interface ResilienceAssessment {
+  worksInBAU: boolean;
+  worksIn15C: boolean;
+  worksInStress: boolean;
+  score: number;
+  redFlags: string[];
+  contingenciesNeeded: string[];
+}
+
 export interface ScenarioAnalysis {
   scenarios: ClimateScenario[];
   carbonPriceSensitivity: { price: number; impact: string }[];
   selectedPathway: string;
+  resilience: ResilienceAssessment;
   boardApproval?: { date: string; approved: boolean; attendees: string };
   status: "draft" | "complete" | "board_approved";
   updatedAt: string;
@@ -374,11 +480,52 @@ export interface FinancialImpactYear {
   debtCapacity: number;
 }
 
+export interface CapexBreakdown {
+  id: string;
+  category: string;
+  description: string;
+  annualAmount: number;
+  isTransition: boolean;
+}
+
+export interface StrandedAssetCategory {
+  id: string;
+  name: string;
+  bookValue: number;
+  bauWritedown: number;
+  bauProbability: number;
+  aligned15cWritedown: number;
+  aligned15cProbability: number;
+  stressWritedown: number;
+  stressProbability: number;
+  probabilityWeightedRisk: number;
+  mitigationStrategy: "managed_divestiture" | "early_retirement" | "asset_conversion" | "financial_hedging" | "none";
+  mitigationDescription: string;
+  mitigationSalvageValue: number;
+}
+
+export interface FundingGapAnalysis {
+  totalCapexNeeded: number;
+  operatingCashFlow: number;
+  greenBonds: number;
+  assetSales: number;
+  govIncentives: number;
+  debtCapacity: number;
+  fundingGap: number;
+  gapStrategy: string;
+}
+
 export interface FinancialImpactModel {
   currentEbitda: number;
+  currentRevenue: number;
   currency: string;
   projections: FinancialImpactYear[];
+  bauCapex: CapexBreakdown[];
+  transitionCapex: CapexBreakdown[];
   transitionCostTotal: number;
+  strandedAssets: StrandedAssetCategory[];
+  totalStrandedRisk: number;
+  fundingGap: FundingGapAnalysis;
   roiOnGreenCapex: string;
   creditRatingImpact: string;
   fundingSources: { source: string; amount: number; percentage: number }[];
@@ -436,6 +583,31 @@ export interface StakeholderEngagementRecord {
 
 // ========== Segment-Level Strategy ==========
 
+export interface SegmentOwnership {
+  ownerTitle: string;
+  ownerName: string;
+  reportsTo: string;
+  bonusTiedToClimate: boolean;
+  climateCompPercent: number;
+  capexApprovalAuthority: string;
+  reportingFrequency: "monthly" | "quarterly";
+  boardApprovalDate: string;
+}
+
+export interface SegmentFinancials {
+  currentRevenue: number;
+  revenue2030: number;
+  revenue2040: number;
+  currentEbitda: number;
+  ebitda2030: number;
+  ebitda2040: number;
+  annualCapex2025_2030: number;
+  annualCapex2030_2040: number;
+  totalCapex15Year: number;
+  renewableROI: string;
+  efficiencyROI: string;
+}
+
 export interface BusinessSegment {
   id: string;
   name: string;
@@ -444,13 +616,19 @@ export interface BusinessSegment {
   emissionsScope2: number;
   emissionsScope3: number;
   percentOfGroupEmissions: number;
-  climateRisks: string[];
-  climateOpportunities: string[];
+  majorSources: string[];
+  climateRisks: { risk: string; impactRM: string; probability: string; mitigation: string }[];
+  climateOpportunities: { opportunity: string; potentialRM: string; capexRequired: string; roi: string }[];
   strategy: string;
   targetReduction2030: string;
+  targetReduction2040: string;
   targetReduction2050: string;
+  renewablePercent2030: string;
+  renewablePercent2050: string;
   capexAllocated: number;
-  milestones: { year: number; description: string }[];
+  milestones: { year: number; description: string; status: "planned" | "in_progress" | "complete" }[];
+  ownership: SegmentOwnership;
+  financials: SegmentFinancials;
 }
 
 export interface SegmentStrategy {
