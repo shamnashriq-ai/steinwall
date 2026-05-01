@@ -35,9 +35,9 @@ export default function LandingPage() {
             <Image
               src="/steinwall-logo.jpg"
               alt="Steinwall"
-              width={160}
-              height={48}
-              className="h-10 w-auto"
+              width={280}
+              height={84}
+              className="h-[70px] w-auto"
               priority
             />
           </Link>
@@ -731,9 +731,9 @@ export default function LandingPage() {
               <Image
                 src="/steinwall-logo.jpg"
                 alt="Steinwall"
-                width={100}
-                height={30}
-                className="h-7 w-auto"
+                width={175}
+                height={53}
+                className="h-[49px] w-auto"
               />
               <span className="text-[14px] text-gray-400">&copy; 2025 Steinwall. All rights reserved.</span>
             </div>
