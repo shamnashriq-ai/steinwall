@@ -91,9 +91,9 @@ export function Sidebar({ open, onClose }: SidebarProps) {
             <Image
               src="/steinwall-logo.jpg"
               alt="Steinwall"
-              width={245}
-              height={74}
-              className="h-[63px] w-auto"
+              width={490}
+              height={148}
+              className="h-[126px] w-auto"
             />
           </Link>
           <button onClick={onClose} className="lg:hidden text-text-secondary hover:text-text-primary cursor-pointer">
