@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import {
   ArrowRight,
   Shield,
@@ -30,13 +31,15 @@ export default function LandingPage() {
       {/* SECTION 1: HEADER */}
       <header className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-sm border-b border-gray-100">
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-          <Link href="/landing" className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-[#185FA5] rounded-lg flex items-center justify-center">
-              <Shield className="w-5 h-5 text-white" />
-            </div>
-            <span className="text-[20px] font-semibold text-[#185FA5]" style={{ fontFamily: "'Outfit', sans-serif" }}>
-              Steinwall
-            </span>
+          <Link href="/landing" className="flex items-center">
+            <Image
+              src="/steinwall-logo.jpg"
+              alt="Steinwall"
+              width={160}
+              height={48}
+              className="h-10 w-auto"
+              priority
+            />
           </Link>
 
           <nav className="hidden md:flex items-center gap-8">
@@ -724,10 +727,14 @@ export default function LandingPage() {
           </div>
 
           <div className="border-t border-gray-700 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
-            <div className="flex items-center gap-2">
-              <div className="w-6 h-6 bg-[#185FA5] rounded-md flex items-center justify-center">
-                <Shield className="w-3.5 h-3.5 text-white" />
-              </div>
+            <div className="flex items-center gap-3">
+              <Image
+                src="/steinwall-logo.jpg"
+                alt="Steinwall"
+                width={100}
+                height={30}
+                className="h-7 w-auto"
+              />
               <span className="text-[14px] text-gray-400">&copy; 2025 Steinwall. All rights reserved.</span>
             </div>
             <div className="flex items-center gap-6">

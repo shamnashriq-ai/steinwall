@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import {
   Home,
@@ -86,13 +87,14 @@ export function Sidebar({ open, onClose }: SidebarProps) {
         }`}
       >
         <div className="flex items-center justify-between p-5 border-b border-neutral-lighter">
-          <Link href="/" className="flex items-center gap-2.5" onClick={onClose}>
-            <div className="w-8 h-8 bg-primary rounded-[var(--radius-sm)] flex items-center justify-center">
-              <BarChart3 className="w-4.5 h-4.5 text-white" />
-            </div>
-            <span className="text-[18px] font-[family-name:var(--font-display)] font-semibold text-primary">
-              Steinwall
-            </span>
+          <Link href="/" className="flex items-center" onClick={onClose}>
+            <Image
+              src="/steinwall-logo.jpg"
+              alt="Steinwall"
+              width={140}
+              height={42}
+              className="h-9 w-auto"
+            />
           </Link>
           <button onClick={onClose} className="lg:hidden text-text-secondary hover:text-text-primary cursor-pointer">
             <X className="w-5 h-5" />
